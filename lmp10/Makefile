@@ -7,7 +7,7 @@ intrp: main.o splines.o points.o interpolator.o gaus/libge.a
 prosta: main.o splines.o points.o prosta.o
 	$(CC) -o prosta  main.o splines.o points.o prosta.o	
 
-aproksymator_Hermit.o: makespl.h points.h gaus/piv_ge_solver.h
+Hermit.o: makespl.h points.h gaus/piv_ge_solver.h Hermit.h
 	$(CC) -I gaus -c aproksymator_Hermit.c
 
 interpolator.o: makespl.h points.h gaus/piv_ge_solver.h
