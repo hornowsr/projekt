@@ -12,8 +12,41 @@ double H( int stopien, double x )
         return 2*x * H( stopien-1, x) - 2*(stopien-1)* H(stopien-2,x);
 }
  
+void sprawdz(spline_t *spl, matrix_t *eqs)
+{	
+	int m=4;
+	if(alloc_spl(spl,1)==0)
+	{
+		double a0=get_entry_matrix(eqs, 0 , m);
+		double a1=get_entry_matrix(eqs, 1 , m);
+		double a2=get_entry_matrix(eqs, 2 , m);
+		double a3=get_entry_matrix(eqs, 3 , m);
+		printf("%lf, %lf, %lf, %lf\n",a0,a1,a2,a3);
+		double x;
+
+		spl->x[0]=x;
+		spl->f[0]=a0+a1*H(1,x)+a2*H(2,x)+a3*H(3,x);
+		spl->f1[0]=2*a1+a2*8*x*a3*(24*x*x-12);
+		spl->f2[0]=a2*8+a3*48*x;
+		spl->f3[0]=a3*48;
+	}
+}
 double dla_y( int j , int max, double *z, double *c)
 {
+	int k;
+	double s=0;
+	for(k=0 ; k<max ; k++)
+	{
+		if(j == 0)
+			s = s+c[k];
+		if(j == 1)
+			s = s+c[k]*H(1,z[k]);
+		if(j == 2)
+			s = s+c[k]*H(2,z[k]);
+		if(j == 3)
+			s = s+c[k]*H(3,z[k]);
+	}
+	return s;
 }
 
 double gdy_0(double s, int j, int k , double *x)
@@ -32,14 +65,44 @@ double gdy_0(double s, int j, int k , double *x)
 
 double gdy_1(double s, int j , int k , double *x)
 {
+	if(j == 0)
+		s = s+H(1,x[k]);
+	else if(j == 1)
+		s = s+H(1,x[k])*H(1,x[k]);
+	else if(j == 2)
+		s = s+H(2,x[k])*H(1,x[k]);
+	else if(j == 3)
+		s = s+H(3,x[k])*H(1,x[k]);
+
+	return s;
 }
 
 double gdy_2(double s, int j, int k, double *x)
 {
+	if(j == 0)
+		s = s+H(2,x[k]);
+	else if(j == 1)
+		s = s+H(1,x[k])*H(2,x[k]);
+	else if(j == 2)
+		s = s+H(2,x[k])*H(2,x[k]);
+	else if(j == 3)
+		s = s+H(3,x[k])*H(2,x[k]);
+
+	return s;
 }
 
 double gdy_3(double s, int j , int k , double *x)
 {
+	if(j == 0)
+		s = s+H(3,x[k]);
+	else if(j == 1)
+		s = s+H(1,x[k])*H(3,x[k]);
+	else if(j == 2)
+		s = s+H(2,x[k])*H(3,x[k]);
+	else if (j == 3)
+		s = s+H(3,x[k])*H(3,x[k]);
+	
+	return s;
 }
 void
 make_spl(points_t * pts, spline_t *spl)
@@ -82,5 +145,6 @@ make_spl(points_t * pts, spline_t *spl)
 		return;
 	}
 
+	sprawdz(spl,eqs);
 }
 
