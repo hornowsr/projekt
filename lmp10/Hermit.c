@@ -21,14 +21,13 @@ void sprawdz(spline_t *spl, matrix_t *eqs)
 		double a1=get_entry_matrix(eqs, 1 , m);
 		double a2=get_entry_matrix(eqs, 2 , m);
 		double a3=get_entry_matrix(eqs, 3 , m);
-		printf("%lf, %lf, %lf, %lf\n",a0,a1,a2,a3);
-		double x;
+		double xx=0;
 
-		spl->x[0]=x;
-		spl->f[0]=a0+a1*H(1,x)+a2*H(2,x)+a3*H(3,x);
-		spl->f1[0]=2*a1+a2*8*x*a3*(24*x*x-12);
-		spl->f2[0]=a2*8+a3*48*x;
-		spl->f3[0]=a3*48;
+		spl->x[0]=xx;
+		spl->f[0]=(a0 + a1*H(1,xx) + a2*H(2,xx) + a3 * H(3,xx));
+		spl->f1[0]=(2*a1+a2*8*xx+a3*(24*xx*xx -12) );
+		spl->f2[0]=(a2*8 +a3*48*xx);
+		spl->f3[0]=(a3*48);
 	}
 }
 double dla_y( int j , int max, double *z, double *c)
