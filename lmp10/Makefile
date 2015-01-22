@@ -1,5 +1,5 @@
-aprox: main.o splines.o points.o Hermit.o gaus/libge.a
-	$(CC) -o aprox  main.o splines.o points.o Hermit.o -L gaus -l ge
+aprox: main.o splines.o points.o aproksymator_na_Hermicie.o gaus/libge.a
+	$(CC) -o aprox  main.o splines.o points.o aproksymator_na_Hermicie.o -L gaus -l ge
 
 intrp: main.o splines.o points.o interpolator.o gaus/libge.a
 	$(CC) -o intrp  main.o splines.o points.o interpolator.o -L gaus -l ge
@@ -7,8 +7,8 @@ intrp: main.o splines.o points.o interpolator.o gaus/libge.a
 prosta: main.o splines.o points.o prosta.o
 	$(CC) -o prosta  main.o splines.o points.o prosta.o	
 
-Hermit.o: makespl.h points.h gaus/piv_ge_solver.h Hermit.h 
-	$(CC) -I gaus -c Hermit.c
+aproksymator_na_Hermicie.o: makespl.h points.h gaus/piv_ge_solver.h
+	$(CC) -I gaus -c aproksymator_na_Hermicie.c
 
 interpolator.o: makespl.h points.h gaus/piv_ge_solver.h
 	$(CC) -I gaus -c interpolator.c

@@ -1,7 +1,6 @@
 #include "points.h"
 #include "splines.h"
 #include "makespl.h"
-
 #include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -93,16 +92,19 @@ main (int argc, char **argv)
 
     if (read_pts_failed (inf, &pts)) 
 	{
+		fclose(inf);
       fprintf (stderr, "%s: bad contents of points file: %s\n\n", argv[0],
                inp);
       exit (EXIT_FAILURE);
     }
     else
       fclose (inf);
-
+	
     ouf = fopen (out, "w");
     if (ouf == NULL) 
 	{
+		free(pts.x);
+		free(pts.y);
       fprintf (stderr, "%s: can not write spline file: %s\n\n", argv[0], out);
       exit (EXIT_FAILURE);
     }
@@ -124,10 +126,12 @@ main (int argc, char **argv)
     }
     if (read_spl (splf, &spl)) 
 	{
+		fclose(splf);
       fprintf (stderr, "%s: bad contents of spline file: %s\n\n", argv[0],
                inp);
       exit (EXIT_FAILURE);
     }
+	fclose(splf);
   }
   else 
   { /* ponts were not given nor spline was given -> it is an error */
@@ -137,6 +141,8 @@ main (int argc, char **argv)
 
   if (spl.n < 1) 
   { /* check if there is a valid spline */
+  	free(pts.x);
+	free(pts.y);
     fprintf (stderr, "%s: bad spline: n=%d\n\n", argv[0], spl.n);
     exit (EXIT_FAILURE);
   }
@@ -169,6 +175,14 @@ main (int argc, char **argv)
 
     if (gpf == NULL) 
 	{
+		free(pts.x);
+		free(pts.y);
+
+		free(spl.x);
+		free(spl.f);
+		free(spl.f1);
+		free(spl.f2);
+		free(spl.f3);
       fprintf (stderr, "%s: can not write gnuplot file: %s\n\n", argv[0],
                gpt);
       exit (EXIT_FAILURE);
@@ -179,6 +193,15 @@ main (int argc, char **argv)
                value_spl (&spl, fromX + i * dx));
 
     fclose (gpf);
+
+	free(spl.x);
+	free(spl.f);
+	free(spl.f1);
+	free(spl.f2);
+	free(spl.f3);
+
+	free(pts.x);
+	free(pts.y);
   }
 
   return 0;
